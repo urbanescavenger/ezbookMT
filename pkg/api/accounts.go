@@ -827,14 +827,21 @@ func (a *AccountsApi) AccountMergeHandler(c *core.WebContext) (any, *errs.Error)
 	}
 
 	uid := c.GetCurrentUid()
-	err = a.accounts.MergeAccounts(c, uid, accountMergeReq.TargetAccountId, accountMergeReq.MergedAccountIds)
+	mergedAccountIds, err := utils.StringArrayToInt64Array(accountMergeReq.MergedAccountIds)
 
 	if err != nil {
-		log.Errorf(c, "[accounts.AccountMergeHandler] failed to merge accounts \"ids:%v\" into account \"id:%d\" for user \"uid:%d\", because %s", accountMergeReq.MergedAccountIds, accountMergeReq.TargetAccountId, uid, err.Error())
+		log.Warnf(c, "[accounts.AccountMergeHandler] parse merged account ids failed, because %s", err.Error())
+		return nil, errs.NewIncompleteOrIncorrectSubmissionError(err)
+	}
+
+	err = a.accounts.MergeAccounts(c, uid, accountMergeReq.TargetAccountId, mergedAccountIds)
+
+	if err != nil {
+		log.Errorf(c, "[accounts.AccountMergeHandler] failed to merge accounts \"ids:%v\" into account \"id:%d\" for user \"uid:%d\", because %s", mergedAccountIds, accountMergeReq.TargetAccountId, uid, err.Error())
 		return nil, errs.Or(err, errs.ErrOperationFailed)
 	}
 
-	log.Infof(c, "[accounts.AccountMergeHandler] user \"uid:%d\" has merged accounts \"ids:%v\" into account \"id:%d\"", uid, accountMergeReq.MergedAccountIds, accountMergeReq.TargetAccountId)
+	log.Infof(c, "[accounts.AccountMergeHandler] user \"uid:%d\" has merged accounts \"ids:%v\" into account \"id:%d\"", uid, mergedAccountIds, accountMergeReq.TargetAccountId)
 	return true, nil
 }
 

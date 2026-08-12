@@ -173,8 +173,8 @@ type AccountDeleteRequest struct {
 
 // AccountMergeRequest represents all parameters of account merging request
 type AccountMergeRequest struct {
-	TargetAccountId  int64   `json:"targetAccountId,string" binding:"required,min=1"`
-	MergedAccountIds []int64 `json:"mergedAccountIds" binding:"required,min=1,dive,min=1"`
+	TargetAccountId  int64    `json:"targetAccountId,string" binding:"required,min=1"`
+	MergedAccountIds []string `json:"mergedAccountIds" binding:"required,min=1,dive,min=1"`
 }
 
 // AccountInfoResponse represents a view-object of account
