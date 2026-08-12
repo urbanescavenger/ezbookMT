@@ -1355,6 +1355,40 @@ export const useTransactionsStore = defineStore('transactions', () => {
         });
     }
 
+    function mergeAccounts({ targetAccountId, mergedAccountIds }: { targetAccountId: string, mergedAccountIds: string[] }): Promise<boolean> {
+        return new Promise((resolve, reject) => {
+            services.mergeAccounts({ targetAccountId, mergedAccountIds }).then(response => {
+                const data = response.data;
+
+                if (!data || !data.success || !data.result) {
+                    reject({ message: 'Unable to merge accounts' });
+                    return;
+                }
+
+                updateStoreInvalidState({
+                    transactionList: true,
+                    reconciliationStatement: true,
+                    accountList: true,
+                    overview: true,
+                    statistics: true,
+                    explorer: true
+                });
+
+                resolve(data.result);
+            }).catch(error => {
+                logger.error('failed to merge accounts', error);
+
+                if (error.response && error.response.data && error.response.data.errorMessage) {
+                    reject({ error: error.response.data });
+                } else if (!error.processed) {
+                    reject({ message: 'Unable to merge accounts' });
+                } else {
+                    reject(error);
+                }
+            });
+        });
+    }
+
     function deleteTransaction({ transaction, defaultCurrency, beforeResolve }: { transaction: TransactionInfoResponse, defaultCurrency: string, beforeResolve?: BeforeResolveFunction }): Promise<boolean> {
         return new Promise((resolve, reject) => {
             services.deleteTransaction({
@@ -1726,6 +1760,7 @@ export const useTransactionsStore = defineStore('transactions', () => {
         batchRemoveTagsFromTransaction,
         batchClearAllTagsFromTransaction,
         moveAllTransactionsBetweenAccounts,
+        mergeAccounts,
         deleteTransaction,
         batchDeleteTransactions,
         recognizeTransactionText,

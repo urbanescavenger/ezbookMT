@@ -160,7 +160,8 @@
             "clearTransactionsTagsTip": "You CANNOT undo this action. This will clear all tags from {count} transactions.",
             "accountActivationAndResendValidationEmailTip": "계정 활성화 링크가 귀하의 이메일 주소({email})로 전송되었습니다. 메일을 받지 못하신 경우, 비밀번호를 다시 입력하고 아래 버튼을 클릭하여 확인 메일을 재전송하십시오.",
             "resendValidationEmailTip": "메일을 받지 못하신 경우, 비밀번호를 다시 입력하고 아래 버튼을 클릭하여 확인 메일을 {email}로 재전송하십시오.",
-            "oauth2bindTip": "{providerName}를 사용하여 {userName} 사용자로 로그인하고 있습니다. 확인을 위해 ezBookkeeping 비밀번호를 입력하세요."
+            "oauth2bindTip": "{providerName}를 사용하여 {userName} 사용자로 로그인하고 있습니다. 확인을 위해 ezBookkeeping 비밀번호를 입력하세요.",
+            "mergeAccountTip": "You CANNOT undo this action. This will merge {fromAccount} into {toAccount}. All transactions of {fromAccount} will be moved to {toAccount}, and {fromAccount} will be removed and kept as an alias of {toAccount}."
         }
     },
     "dataExport": {
@@ -2754,5 +2755,9 @@
     "An error occurred": "오류가 발생했습니다.",
     "Parameter Invalid": "잘못된 매개변수",
     "Numeric Overflow": "숫자 오버플로우",
-    "Click to close": "닫으려면 클릭하세요"
+    "Click to close": "닫으려면 클릭하세요",
+    "Merge into another account": "Merge into another account",
+    "Account Alias": "Account Alias",
+    "Unable to merge accounts": "Unable to merge accounts",
+    "Accounts have been merged.": "Accounts have been merged."
 }

@@ -160,7 +160,8 @@
             "clearTransactionsTagsTip": "You CANNOT undo this action. This will clear all tags from {count} transactions.",
             "accountActivationAndResendValidationEmailTip": "ลิงก์สำหรับเปิดใช้งานบัญชีได้ถูกส่งไปยังอีเมลของคุณแล้ว: {email} หากคุณไม่ได้รับอีเมล โปรดกรอกรหัสผ่านอีกครั้งแล้วกดปุ่มด้านล่างเพื่อส่งอีเมลยืนยันอีกครั้ง",
             "resendValidationEmailTip": "หากคุณไม่ได้รับอีเมล โปรดกรอกรหัสผ่านอีกครั้งแล้วกดปุ่มด้านล่างเพื่อส่งอีเมลยืนยันไปยัง: {email}",
-            "oauth2bindTip": "You're signing in to the {userName} user using {providerName}. Please enter your ezBookkeeping password to verify."
+            "oauth2bindTip": "You're signing in to the {userName} user using {providerName}. Please enter your ezBookkeeping password to verify.",
+            "mergeAccountTip": "You CANNOT undo this action. This will merge {fromAccount} into {toAccount}. All transactions of {fromAccount} will be moved to {toAccount}, and {fromAccount} will be removed and kept as an alias of {toAccount}."
         }
     },
     "dataExport": {
@@ -2754,5 +2755,9 @@
     "An error occurred": "เกิดข้อผิดพลาด",
     "Parameter Invalid": "พารามิเตอร์ไม่ถูกต้อง",
     "Numeric Overflow": "ตัวเลขล้น",
-    "Click to close": "คลิกเพื่อปิด"
+    "Click to close": "คลิกเพื่อปิด",
+    "Merge into another account": "Merge into another account",
+    "Account Alias": "Account Alias",
+    "Unable to merge accounts": "Unable to merge accounts",
+    "Accounts have been merged.": "Accounts have been merged."
 }

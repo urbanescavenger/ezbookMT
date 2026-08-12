@@ -160,7 +160,8 @@
             "clearTransactionsTagsTip": "Bu işlem GERİ ALINAMAZ. {count} işlemin tüm etiketleri kalıcı olarak temizlenecektir.",
             "accountActivationAndResendValidationEmailTip": "Hesap aktivasyon bağlantısı e-posta adresinize ({email}) gönderildi. Eğer e-postayı almadıysanız, lütfen şifrenizi tekrar girin ve doğrulama postasını yeniden göndermek için aşağıdaki butona tıklayın.",
             "resendValidationEmailTip": "Eğer e-postayı almadıysanız, lütfen şifrenizi tekrar girin ve doğrulama postasını şu adrese yeniden göndermek için aşağıdaki butona tıklayın: {email}",
-            "oauth2bindTip": "{providerName} kullanarak {userName} hesabına giriş yapıyorsunuz. Doğrulamak için lütfen ezBookkeeping şifrenizi girin."
+            "oauth2bindTip": "{providerName} kullanarak {userName} hesabına giriş yapıyorsunuz. Doğrulamak için lütfen ezBookkeeping şifrenizi girin.",
+            "mergeAccountTip": "You CANNOT undo this action. This will merge {fromAccount} into {toAccount}. All transactions of {fromAccount} will be moved to {toAccount}, and {fromAccount} will be removed and kept as an alias of {toAccount}."
         }
     },
     "dataExport": {
@@ -2754,5 +2755,9 @@
     "An error occurred": "Bir hata oluştu",
     "Parameter Invalid": "Parametre Geçersiz",
     "Numeric Overflow": "Sayısal Taşma",
-    "Click to close": "Kapatmak için tıklayın"
+    "Click to close": "Kapatmak için tıklayın",
+    "Merge into another account": "Merge into another account",
+    "Account Alias": "Account Alias",
+    "Unable to merge accounts": "Unable to merge accounts",
+    "Accounts have been merged.": "Accounts have been merged."
 }

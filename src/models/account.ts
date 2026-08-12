@@ -19,6 +19,7 @@ export class Account implements AccountInfoResponse {
     public creditCardStatementDate?: number;
     public displayOrder: number;
     public visible: boolean;
+    public aliases?: string[];
     public subAccounts?: Account[];
 
     private _initialBalance?: string;
@@ -27,7 +28,7 @@ export class Account implements AccountInfoResponse {
     private readonly _isAsset?: boolean;
     private readonly _isLiability?: boolean;
 
-    protected constructor(id: string, name: string, parentId: string, category: number, type: number, icon: string, color: string, currency: string, initialBalance: string, comment: string, displayOrder: number, visible: boolean, balanceTime?: number, lastReconciledTime?: number, creditCardStatementDate?: number, isAsset?: boolean, isLiability?: boolean, subAccounts?: Account[]) {
+    protected constructor(id: string, name: string, parentId: string, category: number, type: number, icon: string, color: string, currency: string, initialBalance: string, comment: string, displayOrder: number, visible: boolean, balanceTime?: number, lastReconciledTime?: number, creditCardStatementDate?: number, isAsset?: boolean, isLiability?: boolean, subAccounts?: Account[], aliases?: string[]) {
         this.id = id;
         this.name = name;
         this.parentId = parentId;
@@ -53,6 +54,12 @@ export class Account implements AccountInfoResponse {
             this.subAccounts = subAccounts;
         } else {
             this.subAccounts = undefined;
+        }
+
+        if (typeof(aliases) !== 'undefined') {
+            this.aliases = aliases;
+        } else {
+            this.aliases = undefined;
         }
     }
 
@@ -432,7 +439,8 @@ export class Account implements AccountInfoResponse {
             this.creditCardStatementDate,
             this.isAsset,
             this.isLiability,
-            typeof(this.subAccounts) !== 'undefined' ? Account.cloneAccounts(this.subAccounts) : undefined);
+            typeof(this.subAccounts) !== 'undefined' ? Account.cloneAccounts(this.subAccounts) : undefined,
+            this.aliases);
     }
 
     public createNewSubAccount(currency: string, balanceTime: number): Account {
@@ -494,7 +502,8 @@ export class Account implements AccountInfoResponse {
             accountResponse.creditCardStatementDate,
             accountResponse.isAsset,
             accountResponse.isLiability,
-            accountResponse.subAccounts ? Account.ofMulti(accountResponse.subAccounts) : undefined
+            accountResponse.subAccounts ? Account.ofMulti(accountResponse.subAccounts) : undefined,
+            accountResponse.aliases
         );
     }
 
@@ -516,6 +525,24 @@ export class Account implements AccountInfoResponse {
         }
 
         return defaultName;
+    }
+
+    public getAliases(): string[] {
+        return this.aliases ?? [];
+    }
+
+    public addAlias(alias: string): void {
+        if (!alias) {
+            return;
+        }
+
+        if (!this.aliases) {
+            this.aliases = [];
+        }
+
+        if (this.aliases.indexOf(alias) < 0) {
+            this.aliases.push(alias);
+        }
     }
 
     public static cloneAccounts(accounts: Account[]): Account[] {
@@ -674,6 +701,7 @@ export interface AccountInfoResponse {
     readonly isAsset?: boolean;
     readonly isLiability?: boolean;
     readonly hidden: boolean;
+    readonly aliases?: string[];
     readonly subAccounts?: AccountInfoResponse[];
 }
 
@@ -693,6 +721,11 @@ export interface AccountNewDisplayOrderRequest {
 
 export interface AccountDeleteRequest {
     readonly id: string;
+}
+
+export interface AccountMergeRequest {
+    readonly targetAccountId: string;
+    readonly mergedAccountIds: string[];
 }
 
 export interface AccountBalance {

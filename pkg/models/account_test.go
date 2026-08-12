@@ -18,6 +18,16 @@ func TestAccountToAccountInfoResponseBalance(t *testing.T) {
 	assert.Equal(t, "-9223372036854775808", response.Balance)
 }
 
+func TestAccountToAccountInfoResponseAliases(t *testing.T) {
+	account := &Account{Aliases: []string{"Old Bank", "Bank Card"}}
+	response := account.ToAccountInfoResponse()
+	assert.Equal(t, []string{"Old Bank", "Bank Card"}, response.Aliases)
+
+	account.Aliases = nil
+	response = account.ToAccountInfoResponse()
+	assert.Nil(t, response.Aliases)
+}
+
 func TestAccountInfoResponseSliceLess(t *testing.T) {
 	var accountRespSlice AccountInfoResponseSlice
 	accountRespSlice = append(accountRespSlice, &AccountInfoResponse{

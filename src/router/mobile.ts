@@ -15,6 +15,7 @@ import AccountListPage from '@/views/mobile/accounts/ListPage.vue';
 import AccountEditPage from '@/views/mobile/accounts/EditPage.vue';
 import AccountReconciliationStatementPage from '@/views/mobile/accounts/ReconciliationStatementPage.vue';
 import AccountMoveAllTransactionsPage from '@/views/mobile/accounts/MoveAllTransactionsPage.vue';
+import AccountMergeAccountPage from '@/views/mobile/accounts/MergeAccountPage.vue';
 
 import StatisticsTransactionPage from '@/views/mobile/statistics/TransactionPage.vue';
 import StatisticsSettingsPage from '@/views/mobile/statistics/SettingsPage.vue';
@@ -205,6 +206,11 @@ const routes: Router.RouteParameters[] = [
     {
         path: '/account/move_all_transactions',
         async: asyncResolve(AccountMoveAllTransactionsPage),
+        beforeEnter: [checkLogin]
+    },
+    {
+        path: '/account/merge',
+        async: asyncResolve(AccountMergeAccountPage),
         beforeEnter: [checkLogin]
     },
     {

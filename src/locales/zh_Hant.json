@@ -160,7 +160,8 @@
             "clearTransactionsTagsTip": "您不能還原此操作。此操作將會清除 {count} 個交易中的全部標籤。",
             "accountActivationAndResendValidationEmailTip": "帳號啟用連結已經傳送到您的信箱地址：{email}，如果您沒有收到郵件，請再次輸入密碼並點擊下方的按鈕重新發送驗證郵件。",
             "resendValidationEmailTip": "如果您沒有收到郵件，請再次輸入密碼並點擊下方的按鈕重新發送驗證郵件到：{email}",
-            "oauth2bindTip": "您正在使用 {providerName} 登入 \"{userName}\" 使用者，請輸入您的 ezBookkeeping 的密碼以進行驗證。"
+            "oauth2bindTip": "您正在使用 {providerName} 登入 \"{userName}\" 使用者，請輸入您的 ezBookkeeping 的密碼以進行驗證。",
+            "mergeAccountTip": "此操作無法復原。這將把 {fromAccount} 合併到 {toAccount}。{fromAccount} 的所有交易將移動到 {toAccount}，{fromAccount} 將被移除並保留為 {toAccount} 的一個別名。"
         }
     },
     "dataExport": {
@@ -2754,5 +2755,9 @@
     "An error occurred": "發生錯誤",
     "Parameter Invalid": "參數無效",
     "Numeric Overflow": "數值溢位",
-    "Click to close": "點選關閉"
+    "Click to close": "點選關閉",
+    "Merge into another account": "合併到另一個帳戶",
+    "Account Alias": "帳戶別名",
+    "Unable to merge accounts": "無法合併帳戶",
+    "Accounts have been merged.": "帳戶已合併。"
 }

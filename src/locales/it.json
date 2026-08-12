@@ -160,7 +160,8 @@
             "clearTransactionsTagsTip": "You CANNOT undo this action. This will clear all tags from {count} transactions.",
             "accountActivationAndResendValidationEmailTip": "Abbiamo inviato un link per l'attivazione del tuo account all'indirizzo {email}. Se non hai ricevuto la mail, inserisci nuovamente la password e premi il bottone per ritentare l'invio.",
             "resendValidationEmailTip": "Se non hai ricevuto la mail, inserisci nuovamente la password e premi il bottone per ritentare l'invio all'indirizzo: {email}",
-            "oauth2bindTip": "You're signing in to the {userName} user using {providerName}. Please enter your ezBookkeeping password to verify."
+            "oauth2bindTip": "You're signing in to the {userName} user using {providerName}. Please enter your ezBookkeeping password to verify.",
+            "mergeAccountTip": "You CANNOT undo this action. This will merge {fromAccount} into {toAccount}. All transactions of {fromAccount} will be moved to {toAccount}, and {fromAccount} will be removed and kept as an alias of {toAccount}."
         }
     },
     "dataExport": {
@@ -2754,5 +2755,9 @@
     "An error occurred": "Si è verificato un errore",
     "Parameter Invalid": "Parametro non valido",
     "Numeric Overflow": "Overflow numerico",
-    "Click to close": "Clicca per chiudere"
+    "Click to close": "Clicca per chiudere",
+    "Merge into another account": "Merge into another account",
+    "Account Alias": "Account Alias",
+    "Unable to merge accounts": "Unable to merge accounts",
+    "Accounts have been merged.": "Accounts have been merged."
 }

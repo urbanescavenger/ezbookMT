@@ -816,6 +816,28 @@ func (a *AccountsApi) SubAccountDeleteHandler(c *core.WebContext) (any, *errs.Er
 	return true, nil
 }
 
+// AccountMergeHandler merges one or more accounts into a target account by request parameters for current user
+func (a *AccountsApi) AccountMergeHandler(c *core.WebContext) (any, *errs.Error) {
+	var accountMergeReq models.AccountMergeRequest
+	err := c.ShouldBindJSON(&accountMergeReq)
+
+	if err != nil {
+		log.Warnf(c, "[accounts.AccountMergeHandler] parse request failed, because %s", err.Error())
+		return nil, errs.NewIncompleteOrIncorrectSubmissionError(err)
+	}
+
+	uid := c.GetCurrentUid()
+	err = a.accounts.MergeAccounts(c, uid, accountMergeReq.TargetAccountId, accountMergeReq.MergedAccountIds)
+
+	if err != nil {
+		log.Errorf(c, "[accounts.AccountMergeHandler] failed to merge accounts \"ids:%v\" into account \"id:%d\" for user \"uid:%d\", because %s", accountMergeReq.MergedAccountIds, accountMergeReq.TargetAccountId, uid, err.Error())
+		return nil, errs.Or(err, errs.ErrOperationFailed)
+	}
+
+	log.Infof(c, "[accounts.AccountMergeHandler] user \"uid:%d\" has merged accounts \"ids:%v\" into account \"id:%d\"", uid, accountMergeReq.MergedAccountIds, accountMergeReq.TargetAccountId)
+	return true, nil
+}
+
 func (a *AccountsApi) createNewAccountModel(uid int64, accountCreateReq *models.AccountCreateRequest, balance int64, isSubAccount bool, order int32) *models.Account {
 	accountExtend := &models.AccountExtend{}
 

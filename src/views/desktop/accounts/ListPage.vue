@@ -174,6 +174,10 @@
                                                                     </span>
                                                                 </div>
 
+                                                                <div class="account-aliases text-caption text-medium-emphasis ms-2 mt-1" v-if="element.getAliases().length">
+                                                                    {{ tt('Account Alias') }}: {{ element.getAliases().join('、') }}
+                                                                </div>
+
                                                                 <div class="mt-4" v-if="element.type === AccountType.MultiSubAccounts.type">
                                                                     <v-btn-toggle
                                                                         class="account-subaccounts"
@@ -267,6 +271,10 @@
                                                                                              :prepend-icon="mdiSwapHorizontal"
                                                                                              @click="moveAllTransactions(element.getAccountOrSubAccount(activeSubAccount[element.id]))"></v-list-item>
                                                                                 <v-list-item class="text-body-medium" density="compact"
+                                                                                             :title="tt('Merge into another account')"
+                                                                                             :prepend-icon="mdiMerge"
+                                                                                             @click="mergeAccount(element.getAccountOrSubAccount(activeSubAccount[element.id]))"></v-list-item>
+                                                                                <v-list-item class="text-body-medium" density="compact"
                                                                                              :title="tt('Clear All Transactions')"
                                                                                              :prepend-icon="mdiEraser"
                                                                                              @click="clearAllTransactions(element.getAccountOrSubAccount(activeSubAccount[element.id]))"></v-list-item>
@@ -307,6 +315,7 @@
     <reconciliation-statement-dialog ref="reconciliationStatementDialog"
                                      @error="onShowDateRangeError" />
     <move-all-transactions-dialog ref="moveAllTransactionsDialog" />
+    <merge-account-dialog ref="mergeAccountDialog" />
     <clear-all-transactions-dialog ref="clearAllTransactionsDialog" />
 
     <date-range-selection-dialog :title="tt('Custom Date Range')"
@@ -324,6 +333,7 @@ import SnackBar from '@/components/desktop/SnackBar.vue';
 import EditDialog from './list/dialogs/EditDialog.vue';
 import ReconciliationStatementDialog from './list/dialogs/ReconciliationStatementDialog.vue';
 import MoveAllTransactionsDialog from '@/views/desktop/accounts/list/dialogs/MoveAllTransactionsDialog.vue';
+import MergeAccountDialog from '@/views/desktop/accounts/list/dialogs/MergeAccountDialog.vue';
 import ClearAllTransactionsDialog from '@/views/desktop/accounts/list/dialogs/ClearAllTransactionsDialog.vue';
 import AccountFilterSettingsDialog from '@/views/desktop/common/dialogs/AccountFilterSettingsDialog.vue';
 
@@ -361,6 +371,7 @@ import {
     mdiDotsHorizontalCircleOutline,
     mdiReceiptTextCheckOutline,
     mdiSwapHorizontal,
+    mdiMerge,
     mdiEraser,
     mdiDeleteOutline,
     mdiListBoxOutline,
@@ -374,6 +385,7 @@ type SnackBarType = InstanceType<typeof SnackBar>;
 type EditDialogType = InstanceType<typeof EditDialog>;
 type ReconciliationStatementDialogType = InstanceType<typeof ReconciliationStatementDialog>;
 type MoveAllTransactionsDialogType = InstanceType<typeof MoveAllTransactionsDialog>;
+type MergeAccountDialogType = InstanceType<typeof MergeAccountDialog>;
 type ClearAllTransactionsDialogType = InstanceType<typeof ClearAllTransactionsDialog>;
 
 const { lgAndUp } = useDisplay();
@@ -409,6 +421,7 @@ const snackbar = useTemplateRef<SnackBarType>('snackbar');
 const editDialog = useTemplateRef<EditDialogType>('editDialog');
 const reconciliationStatementDialog = useTemplateRef<ReconciliationStatementDialogType>('reconciliationStatementDialog');
 const moveAllTransactionsDialog = useTemplateRef<MoveAllTransactionsDialogType>('moveAllTransactionsDialog');
+const mergeAccountDialog = useTemplateRef<MergeAccountDialogType>('mergeAccountDialog');
 const clearAllTransactionsDialog = useTemplateRef<ClearAllTransactionsDialogType>('clearAllTransactionsDialog');
 
 const activeAccountCategoryType = ref<number>(defaultAccountCategory.value.type);
@@ -608,6 +621,16 @@ function updateLastReconciledTime(account: Account): void {
 function moveAllTransactions(account: Account): void {
     moveAllTransactionsDialog.value?.open(account).then(() => {
         snackbar.value?.showMessage('All transactions in this account have been moved.');
+
+        if (accountsStore.accountListStateInvalid && !loading.value) {
+            reload(false);
+        }
+    });
+}
+
+function mergeAccount(account: Account): void {
+    mergeAccountDialog.value?.open(account).then(() => {
+        snackbar.value?.showMessage('Accounts have been merged.');
 
         if (accountsStore.accountListStateInvalid && !loading.value) {
             reload(false);

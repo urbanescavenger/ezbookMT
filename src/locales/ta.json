@@ -160,7 +160,8 @@
             "clearTransactionsTagsTip": "You CANNOT undo this action. This will clear all tags from {count} transactions.",
             "accountActivationAndResendValidationEmailTip": "கணக்கு செயல்படுத்தும் இணைப்பு உங்கள் மின்னஞ்சலுக்கு அனுப்பப்பட்டது: {email}. நீங்கள் மின்னஞ்சலைப் பெறவில்லை என்றால், கடவுச்சொல்லை மீண்டும் உள்ளிட்டு கீழே உள்ள பொத்தானை அழுத்தி சரிபார்ப்பு மின்னஞ்சலை மீண்டும் அனுப்பவும்.",
             "resendValidationEmailTip": "நீங்கள் மின்னஞ்சலைப் பெறவில்லை என்றால், கடவுச்சொல்லை மீண்டும் உள்ளிட்டு கீழே உள்ள பொத்தானை அழுத்தவும், சரிபார்ப்பு மின்னஞ்சல் அனுப்பப்படும்: {email}",
-            "oauth2bindTip": "நீங்கள் {providerName} பயன்படுத்தி {userName} பயனராக உள்நுழைகிறீர்கள். உறுதிப்படுத்த உங்கள் ezBookkeeping கடவுச்சொல்லை உள்ளிடவும்."
+            "oauth2bindTip": "நீங்கள் {providerName} பயன்படுத்தி {userName} பயனராக உள்நுழைகிறீர்கள். உறுதிப்படுத்த உங்கள் ezBookkeeping கடவுச்சொல்லை உள்ளிடவும்.",
+            "mergeAccountTip": "You CANNOT undo this action. This will merge {fromAccount} into {toAccount}. All transactions of {fromAccount} will be moved to {toAccount}, and {fromAccount} will be removed and kept as an alias of {toAccount}."
         }
     },
     "dataExport": {
@@ -2754,5 +2755,9 @@
     "An error occurred": "பிழை ஏற்பட்டது",
     "Parameter Invalid": "தவறான அளவுரு",
     "Numeric Overflow": "எண் வழிதல்",
-    "Click to close": "மூட கிளிக் செய்யவும்"
+    "Click to close": "மூட கிளிக் செய்யவும்",
+    "Merge into another account": "Merge into another account",
+    "Account Alias": "Account Alias",
+    "Unable to merge accounts": "Unable to merge accounts",
+    "Accounts have been merged.": "Accounts have been merged."
 }

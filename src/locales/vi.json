@@ -160,7 +160,8 @@
             "clearTransactionsTagsTip": "You CANNOT undo this action. This will clear all tags from {count} transactions.",
             "accountActivationAndResendValidationEmailTip": "Liên kết kích hoạt tài khoản đã được gửi tới email của bạn: {email}. Nếu bạn không nhận được email, vui lòng nhập lại mật khẩu và nhấp nút bên dưới để gửi lại email xác nhận.",
             "resendValidationEmailTip": "Nếu bạn không nhận được email, vui lòng nhập lại mật khẩu và nhấp nút bên dưới để gửi lại email xác nhận tới: {email}",
-            "oauth2bindTip": "You're signing in to the {userName} user using {providerName}. Please enter your ezBookkeeping password to verify."
+            "oauth2bindTip": "You're signing in to the {userName} user using {providerName}. Please enter your ezBookkeeping password to verify.",
+            "mergeAccountTip": "You CANNOT undo this action. This will merge {fromAccount} into {toAccount}. All transactions of {fromAccount} will be moved to {toAccount}, and {fromAccount} will be removed and kept as an alias of {toAccount}."
         }
     },
     "dataExport": {
@@ -2754,5 +2755,9 @@
     "An error occurred": "Đã xảy ra lỗi",
     "Parameter Invalid": "Tham số không hợp lệ",
     "Numeric Overflow": "Tràn số",
-    "Click to close": "Nhấp để đóng"
+    "Click to close": "Nhấp để đóng",
+    "Merge into another account": "Merge into another account",
+    "Account Alias": "Account Alias",
+    "Unable to merge accounts": "Unable to merge accounts",
+    "Accounts have been merged.": "Accounts have been merged."
 }

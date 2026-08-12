@@ -160,7 +160,8 @@
             "clearTransactionsTagsTip": "Цю дію НЕ МОЖНА скасувати. Це призведе до очищення всіх тегів із транзакцій (кількість: {count}).",
             "accountActivationAndResendValidationEmailTip": "Посилання для активації облікового запису було надіслано на вашу електронну адресу: {email}. Якщо ви не отримали лист, введіть пароль ще раз і натисніть кнопку нижче, щоб надіслати лист повторно.",
             "resendValidationEmailTip": "Якщо ви не отримали лист, введіть пароль ще раз і натисніть кнопку нижче, щоб надіслати лист повторно на адресу: {email}",
-            "oauth2bindTip": "Ви входите як користувач {userName}, використовуючи {providerName}. Введіть пароль ezBookkeeping для підтвердження."
+            "oauth2bindTip": "Ви входите як користувач {userName}, використовуючи {providerName}. Введіть пароль ezBookkeeping для підтвердження.",
+            "mergeAccountTip": "You CANNOT undo this action. This will merge {fromAccount} into {toAccount}. All transactions of {fromAccount} will be moved to {toAccount}, and {fromAccount} will be removed and kept as an alias of {toAccount}."
         }
     },
     "dataExport": {
@@ -2754,5 +2755,9 @@
     "An error occurred": "Сталася помилка",
     "Parameter Invalid": "Неправильний параметр",
     "Numeric Overflow": "Числове переповнення",
-    "Click to close": "Натисніть, щоб закрити"
+    "Click to close": "Натисніть, щоб закрити",
+    "Merge into another account": "Merge into another account",
+    "Account Alias": "Account Alias",
+    "Unable to merge accounts": "Unable to merge accounts",
+    "Accounts have been merged.": "Accounts have been merged."
 }

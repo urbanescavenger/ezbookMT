@@ -405,6 +405,7 @@ func startWebServer(c *core.CliContext) error {
 			apiV1Route.POST("/accounts/move.json", bindApi(api.Accounts.AccountMoveHandler, config))
 			apiV1Route.POST("/accounts/delete.json", bindApi(api.Accounts.AccountDeleteHandler, config))
 			apiV1Route.POST("/accounts/sub_account/delete.json", bindApi(api.Accounts.SubAccountDeleteHandler, config))
+			apiV1Route.POST("/accounts/merge.json", bindApi(api.Accounts.AccountMergeHandler, config))
 
 			// Transactions
 			apiV1Route.GET("/transactions/count.json", bindApi(api.Transactions.TransactionCountHandler, config))

@@ -160,7 +160,8 @@
             "clearTransactionsTagsTip": "您不能撤销该操作。该操作将会清除 {count} 个交易中的全部标签。",
             "accountActivationAndResendValidationEmailTip": "账号激活链接已经发送到您的邮箱地址：{email}，如果您没有收到邮件，请再次输入密码并点击下方的按钮重新发送验证邮件。",
             "resendValidationEmailTip": "如果您没有收到邮件，请再次输入密码并点击下方的按钮重新发送验证邮件到：{email}",
-            "oauth2bindTip": "您正在使用 {providerName} 登录 \"{userName}\" 用户，请输入你的 ezBookkeeping 的密码进行验证。"
+            "oauth2bindTip": "您正在使用 {providerName} 登录 \"{userName}\" 用户，请输入你的 ezBookkeeping 的密码进行验证。",
+            "mergeAccountTip": "此操作无法撤销。这将把 {fromAccount} 合并到 {toAccount}。{fromAccount} 的所有交易将移动到 {toAccount}，{fromAccount} 将被移除并保留为 {toAccount} 的一个别名。"
         }
     },
     "dataExport": {
@@ -2754,5 +2755,9 @@
     "An error occurred": "发生错误",
     "Parameter Invalid": "参数错误",
     "Numeric Overflow": "数值溢出",
-    "Click to close": "点击关闭"
+    "Click to close": "点击关闭",
+    "Merge into another account": "合并到另一个账户",
+    "Account Alias": "账户别名",
+    "Unable to merge accounts": "无法合并账户",
+    "Accounts have been merged.": "账户已合并。"
 }

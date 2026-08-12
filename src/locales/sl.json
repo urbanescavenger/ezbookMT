@@ -160,7 +160,8 @@
             "clearTransactionsTagsTip": "You CANNOT undo this action. This will clear all tags from {count} transactions.",
             "accountActivationAndResendValidationEmailTip": "Povezava za aktivacijo računa je bila poslana na vaš e-poštni naslov: {email}. Če e-pošte ne prejmete, ponovno vnesite geslo in kliknite spodnji gumb, da ponovno pošljete potrditveno e-pošto.",
             "resendValidationEmailTip": "Če ne prejmete e-pošte, ponovno vnesite geslo in kliknite spodnji gumb, da ponovno pošljete potrditveno e-pošto na: {email}",
-            "oauth2bindTip": "Prijavljate se v uporabniški račun {userName} z uporabo računa {providerName}. Za potrditev vnesite svoje geslo za ezBookkeeping."
+            "oauth2bindTip": "Prijavljate se v uporabniški račun {userName} z uporabo računa {providerName}. Za potrditev vnesite svoje geslo za ezBookkeeping.",
+            "mergeAccountTip": "You CANNOT undo this action. This will merge {fromAccount} into {toAccount}. All transactions of {fromAccount} will be moved to {toAccount}, and {fromAccount} will be removed and kept as an alias of {toAccount}."
         }
     },
     "dataExport": {
@@ -370,7 +371,7 @@
         "Haiti": "Haiti",
         "Havana": "Havana",
         "Indiana (East)": "Indiana (vzhod)",
-        "Turks and Caicos": "Otoki Turks\u00A0in Caicos",
+        "Turks and Caicos": "Otoki Turks in Caicos",
         "Asuncion": "Asuncion",
         "Atlantic Time (Canada)": "Atlantski čas (Kanada)",
         "Caracas": "Caracas",
@@ -2754,5 +2755,9 @@
     "An error occurred": "Prišlo je do napake",
     "Parameter Invalid": "Neveljaven parameter",
     "Numeric Overflow": "Številčni preliv (Overflow)",
-    "Click to close": "Kliknite za zaprtje"
+    "Click to close": "Kliknite za zaprtje",
+    "Merge into another account": "Merge into another account",
+    "Account Alias": "Account Alias",
+    "Unable to merge accounts": "Unable to merge accounts",
+    "Accounts have been merged.": "Accounts have been merged."
 }

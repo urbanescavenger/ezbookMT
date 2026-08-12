@@ -160,7 +160,8 @@
             "clearTransactionsTagsTip": "Această acțiune NU poate fi anulată. Toate etichetele vor fi șterse de pe {count} tranzacții.",
             "accountActivationAndResendValidationEmailTip": "Linkul de activare a contului a fost trimis la adresa ta de email: {email}. Dacă nu primești mesajul, te rugăm să introduci din nou parola și să faci clic pe butonul de mai jos pentru a retrimite emailul de validare.",
             "resendValidationEmailTip": "Dacă nu primești mesajul, te rugăm să introduci din nou parola și să faci clic pe butonul de mai jos pentru a retrimite emailul de validare la: {email}",
-            "oauth2bindTip": "Te autentifici în contul de utilizator {userName} folosind {providerName}. Te rugăm să introduci parola ezBookkeeping pentru verificare."
+            "oauth2bindTip": "Te autentifici în contul de utilizator {userName} folosind {providerName}. Te rugăm să introduci parola ezBookkeeping pentru verificare.",
+            "mergeAccountTip": "You CANNOT undo this action. This will merge {fromAccount} into {toAccount}. All transactions of {fromAccount} will be moved to {toAccount}, and {fromAccount} will be removed and kept as an alias of {toAccount}."
         }
     },
     "dataExport": {
@@ -384,7 +385,7 @@
         "City of Buenos Aires": "Buenos Aires",
         "Montevideo": "Montevideo",
         "Punta Arenas": "Punta Arenas",
-        "Saint Pierre and Miquelon": "Saint-Pierre\u00A0și Miquelon",
+        "Saint Pierre and Miquelon": "Saint-Pierre și Miquelon",
         "Salvador": "Salvador",
         "Coordinated Universal Time-02": "Ora universală-02",
         "Greenland": "Groenlanda",
@@ -2754,5 +2755,9 @@
     "An error occurred": "A apărut o eroare",
     "Parameter Invalid": "Parametru nevalid",
     "Numeric Overflow": "Depășire numerică (Overflow)",
-    "Click to close": "Fă clic pentru a închide"
+    "Click to close": "Fă clic pentru a închide",
+    "Merge into another account": "Merge into another account",
+    "Account Alias": "Account Alias",
+    "Unable to merge accounts": "Unable to merge accounts",
+    "Accounts have been merged.": "Accounts have been merged."
 }

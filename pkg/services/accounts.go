@@ -872,6 +872,115 @@ func (s *AccountService) DeleteSubAccount(c core.Context, uid int64, accountId i
 	})
 }
 
+// MergeAccounts merges one or more accounts into a target account, all transactions
+// of the merged accounts will be moved to the target account and the names of the
+// merged accounts will be kept as aliases of the target account
+func (s *AccountService) MergeAccounts(c core.Context, uid int64, targetAccountId int64, mergedAccountIds []int64) error {
+	if uid <= 0 {
+		return errs.ErrUserIdInvalid
+	}
+
+	if targetAccountId <= 0 || len(mergedAccountIds) < 1 {
+		return errs.ErrAccountIdInvalid
+	}
+
+	now := time.Now().Unix()
+
+	return s.UserDataDB(uid).DoTransaction(c, func(sess *xorm.Session) error {
+		// get and verify target account
+		targetAccount := &models.Account{}
+		has, err := sess.ID(targetAccountId).Where("uid=? AND deleted=?", uid, false).Get(targetAccount)
+
+		if err != nil {
+			return err
+		} else if !has {
+			return errs.ErrAccountNotFound
+		}
+
+		if targetAccount.Type == models.ACCOUNT_TYPE_MULTI_SUB_ACCOUNTS {
+			return errs.ErrCannotMergeParentAccount
+		}
+
+		if targetAccount.Hidden {
+			return errs.ErrCannotMergeToHiddenAccount
+		}
+
+		aliasSet := make(map[string]bool)
+
+		for i := 0; i < len(targetAccount.Aliases); i++ {
+			aliasSet[targetAccount.Aliases[i]] = true
+		}
+
+		for i := 0; i < len(mergedAccountIds); i++ {
+			mergedAccountId := mergedAccountIds[i]
+
+			if mergedAccountId == targetAccountId {
+				return errs.ErrCannotMergeAccountToItself
+			}
+
+			// get and verify merged account
+			mergedAccount := &models.Account{}
+			has, err := sess.ID(mergedAccountId).Where("uid=? AND deleted=?", uid, false).Get(mergedAccount)
+
+			if err != nil {
+				return err
+			} else if !has {
+				return errs.ErrAccountNotFound
+			}
+
+			if mergedAccount.Type == models.ACCOUNT_TYPE_MULTI_SUB_ACCOUNTS {
+				return errs.ErrCannotMergeParentAccount
+			}
+
+			if mergedAccount.Currency != targetAccount.Currency {
+				return errs.ErrCannotMergeAccountWithDifferentCurrency
+			}
+
+			// move all transactions of merged account to target account
+			err = Transactions.moveAllTransactionsBetweenAccounts(c, sess, uid, mergedAccount, targetAccount)
+
+			if err != nil {
+				return err
+			}
+
+			// keep the name of the merged account as an alias of the target account
+			if !aliasSet[mergedAccount.Name] {
+				aliasSet[mergedAccount.Name] = true
+				targetAccount.Aliases = append(targetAccount.Aliases, mergedAccount.Name)
+			}
+
+			// soft delete the merged account
+			mergedAccount.Balance = 0
+			mergedAccount.Deleted = true
+			mergedAccount.DeletedUnixTime = now
+			mergedAccount.UpdatedUnixTime = now
+
+			deletedRows, err := sess.ID(mergedAccount.AccountId).Cols("balance", "deleted", "deleted_unix_time", "updated_unix_time").Where("uid=? AND deleted=?", mergedAccount.Uid, false).Update(mergedAccount)
+
+			if err != nil {
+				return err
+			} else if deletedRows < 1 {
+				return errs.ErrAccountNotFound
+			}
+
+			log.Infof(c, "[accounts.MergeAccounts] user \"uid:%d\" has merged account \"id:%d\" into account \"id:%d\"", uid, mergedAccountId, targetAccountId)
+		}
+
+		// persist the aliases of target account
+		targetAccount.UpdatedUnixTime = now
+
+		updatedRows, err := sess.ID(targetAccount.AccountId).Cols("aliases", "updated_unix_time").Where("uid=? AND deleted=?", targetAccount.Uid, false).Update(targetAccount)
+
+		if err != nil {
+			return err
+		} else if updatedRows < 1 {
+			return errs.ErrAccountNotFound
+		}
+
+		return nil
+	})
+}
+
 // GetAccountMapByList returns an account map by a list
 func (s *AccountService) GetAccountMapByList(accounts []*models.Account) map[int64]*models.Account {
 	accountMap := make(map[int64]*models.Account)
@@ -883,7 +992,8 @@ func (s *AccountService) GetAccountMapByList(accounts []*models.Account) map[int
 	return accountMap
 }
 
-// GetVisibleAccountNameMapByList returns visible account map by a list
+// GetVisibleAccountNameMapByList returns visible account map by a list, both the
+// real name and the aliases of each account will be mapped to the account
 func (s *AccountService) GetVisibleAccountNameMapByList(accounts []*models.Account) map[string]*models.Account {
 	accountMap := make(map[string]*models.Account)
 
@@ -900,6 +1010,34 @@ func (s *AccountService) GetVisibleAccountNameMapByList(accounts []*models.Accou
 
 		accountMap[account.Name] = account
 	}
+
+	// map aliases to the account, the real account name takes precedence when it conflicts with an alias
+	for i := 0; i < len(accounts); i++ {
+		account := accounts[i]
+
+		if account.Hidden {
+			continue
+		}
+
+		if account.Type == models.ACCOUNT_TYPE_MULTI_SUB_ACCOUNTS {
+			continue
+		}
+
+		for j := 0; j < len(account.Aliases); j++ {
+			alias := account.Aliases[j]
+
+			if alias == "" {
+				continue
+			}
+
+			if _, exists := accountMap[alias]; exists {
+				continue
+			}
+
+			accountMap[alias] = account
+		}
+	}
+
 	return accountMap
 }
 

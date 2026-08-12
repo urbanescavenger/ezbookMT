@@ -39,7 +39,8 @@ import type {
     AccountInfoResponse,
     AccountHideRequest,
     AccountMoveRequest,
-    AccountDeleteRequest
+    AccountDeleteRequest,
+    AccountMergeRequest
 } from '@/models/account.ts';
 import type {
     AuthResponse,
@@ -521,6 +522,9 @@ export default {
     },
     deleteSubAccount: (req: AccountDeleteRequest): ApiResponsePromise<boolean> => {
         return axios.post<ApiResponse<boolean>>('v1/accounts/sub_account/delete.json', req);
+    },
+    mergeAccounts: (req: AccountMergeRequest): ApiResponsePromise<boolean> => {
+        return axios.post<ApiResponse<boolean>>('v1/accounts/merge.json', req);
     },
     getTransactions: (req: TransactionListByMaxTimeRequest): ApiResponsePromise<TransactionInfoPageWrapperResponse> => {
         const tagFilter = encodeURIComponent(req.tagFilter);

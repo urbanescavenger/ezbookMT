@@ -112,6 +112,7 @@
                             </ItemIcon>
                             <div class="nested-list-item-title">
                                 <span>{{ account.name }}</span>
+                                <div class="item-footer" v-if="account.getAliases().length">{{ tt('Account Alias') }}: {{ account.getAliases().join('、') }}</div>
                                 <div class="item-footer" v-if="account.comment">{{ account.comment }}</div>
                             </div>
                             <div class="nested-list-item-after" v-if="account.type === AccountType.MultiSubAccounts.type">
@@ -168,6 +169,7 @@
             </f7-actions-group>
             <f7-actions-group v-if="accountForMoreActionSheet && accountForMoreActionSheet.type === AccountType.SingleAccount.type">
                 <f7-actions-button @click="moveAllTransactions(accountForMoreActionSheet)">{{ tt('Move All Transactions') }}</f7-actions-button>
+                <f7-actions-button @click="mergeAccount(accountForMoreActionSheet)">{{ tt('Merge into another account') }}</f7-actions-button>
                 <f7-actions-button color="red" @click="showPasswordSheetForClearAllTransaction(accountForMoreActionSheet)">{{ tt('Clear All Transactions') }}</f7-actions-button>
             </f7-actions-group>
             <template v-if="accountForMoreActionSheet && accountForMoreActionSheet.type === AccountType.MultiSubAccounts.type">
@@ -178,6 +180,7 @@
                     <f7-actions-button @click="showReconciliationStatement(subAccount)">{{ tt('Reconciliation Statement') }}</f7-actions-button>
                     <f7-actions-button @click="updateLastReconciledTime(subAccount)" v-if="useLastReconciledTime">{{ tt('Mark as Reconciled') }}</f7-actions-button>
                     <f7-actions-button @click="moveAllTransactions(subAccount)">{{ tt('Move All Transactions') }}</f7-actions-button>
+                    <f7-actions-button @click="mergeAccount(subAccount)">{{ tt('Merge into another account') }}</f7-actions-button>
                     <f7-actions-button color="red" @click="showPasswordSheetForClearAllTransaction(subAccount)">{{ tt('Clear All Transactions') }}</f7-actions-button>
                 </f7-actions-group>
             </template>
@@ -414,6 +417,17 @@ function moveAllTransactions(account: Account | null): void {
     }
 
     props.f7router.navigate('/account/move_all_transactions?fromAccountId=' + account.id);
+    showAccountMoreActionSheet.value = false;
+    accountForMoreActionSheet.value = null;
+}
+
+function mergeAccount(account: Account | null): void {
+    if (!account) {
+        showAlert('An error occurred');
+        return;
+    }
+
+    props.f7router.navigate('/account/merge?fromAccountId=' + account.id);
     showAccountMoreActionSheet.value = false;
     accountForMoreActionSheet.value = null;
 }

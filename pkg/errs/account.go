@@ -29,4 +29,8 @@ var (
 	ErrParentAccountCannotSetLastReconciledTime = NewNormalError(NormalSubcategoryAccount, 23, http.StatusBadRequest, "parent account cannot set last reconciled time")
 	ErrCannotSetLastReconciledTimeBeforeCurrent = NewNormalError(NormalSubcategoryAccount, 24, http.StatusBadRequest, "cannot set last reconciled time before current value")
 	ErrAccountBalanceOverflow                   = NewNormalError(NormalSubcategoryAccount, 25, http.StatusBadRequest, "account balance overflow")
+	ErrCannotMergeAccountToItself               = NewNormalError(NormalSubcategoryAccount, 26, http.StatusBadRequest, "cannot merge an account into itself")
+	ErrCannotMergeParentAccount                 = NewNormalError(NormalSubcategoryAccount, 27, http.StatusBadRequest, "cannot merge a parent account which has sub-accounts")
+	ErrCannotMergeToHiddenAccount               = NewNormalError(NormalSubcategoryAccount, 28, http.StatusBadRequest, "cannot merge accounts into a hidden account")
+	ErrCannotMergeAccountWithDifferentCurrency  = NewNormalError(NormalSubcategoryAccount, 29, http.StatusBadRequest, "cannot merge accounts with different currencies")
 )

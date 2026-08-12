@@ -87,6 +87,7 @@ type Account struct {
 	Comment         string          `xorm:"VARCHAR(255) NOT NULL"`
 	Extend          *AccountExtend  `xorm:"BLOB"`
 	Hidden          bool            `xorm:"NOT NULL"`
+	Aliases         []string        `xorm:"JSON"`
 	CreatedUnixTime int64
 	UpdatedUnixTime int64
 	DeletedUnixTime int64
@@ -170,6 +171,12 @@ type AccountDeleteRequest struct {
 	Id int64 `json:"id,string" binding:"required,min=1"`
 }
 
+// AccountMergeRequest represents all parameters of account merging request
+type AccountMergeRequest struct {
+	TargetAccountId  int64   `json:"targetAccountId,string" binding:"required,min=1"`
+	MergedAccountIds []int64 `json:"mergedAccountIds" binding:"required,min=1,dive,min=1"`
+}
+
 // AccountInfoResponse represents a view-object of account
 type AccountInfoResponse struct {
 	Id                      int64                    `json:"id,string"`
@@ -188,6 +195,7 @@ type AccountInfoResponse struct {
 	IsAsset                 bool                     `json:"isAsset,omitempty"`
 	IsLiability             bool                     `json:"isLiability,omitempty"`
 	Hidden                  bool                     `json:"hidden"`
+	Aliases                 []string                 `json:"aliases,omitempty"`
 	SubAccounts             AccountInfoResponseSlice `json:"subAccounts,omitempty"`
 }
 
@@ -234,6 +242,7 @@ func (a *Account) ToAccountInfoResponse() *AccountInfoResponse {
 		IsAsset:                 assetAccountCategory[a.Category],
 		IsLiability:             liabilityAccountCategory[a.Category],
 		Hidden:                  a.Hidden,
+		Aliases:                 a.Aliases,
 	}
 }
 

@@ -96,6 +96,84 @@ func TestGetVisibleAccountNameMapByList_WithParentAccount(t *testing.T) {
 	assert.NotContains(t, actualAccountMap, "Multi Sub Accounts")
 }
 
+func TestGetVisibleAccountNameMapByList_WithAliases(t *testing.T) {
+	accounts := []*models.Account{
+		{
+			AccountId: 1001,
+			Name:      "Bank Account",
+			Type:      models.ACCOUNT_TYPE_SINGLE_ACCOUNT,
+			Hidden:    false,
+			Aliases:   []string{"Old Bank", "Bank Card"},
+		},
+	}
+	actualAccountMap := Accounts.GetVisibleAccountNameMapByList(accounts)
+
+	assert.Equal(t, 3, len(actualAccountMap))
+	assert.Contains(t, actualAccountMap, "Bank Account")
+	assert.Contains(t, actualAccountMap, "Old Bank")
+	assert.Contains(t, actualAccountMap, "Bank Card")
+	assert.Equal(t, int64(1001), actualAccountMap["Old Bank"].AccountId)
+	assert.Equal(t, int64(1001), actualAccountMap["Bank Card"].AccountId)
+}
+
+func TestGetVisibleAccountNameMapByList_AliasConflictsWithRealName(t *testing.T) {
+	accounts := []*models.Account{
+		{
+			AccountId: 1001,
+			Name:      "Bank Account",
+			Type:      models.ACCOUNT_TYPE_SINGLE_ACCOUNT,
+			Hidden:    false,
+			Aliases:   []string{"Cash"},
+		},
+		{
+			AccountId: 1002,
+			Name:      "Cash",
+			Type:      models.ACCOUNT_TYPE_SINGLE_ACCOUNT,
+			Hidden:    false,
+		},
+	}
+	actualAccountMap := Accounts.GetVisibleAccountNameMapByList(accounts)
+
+	// the real account name takes precedence over the alias
+	assert.Contains(t, actualAccountMap, "Cash")
+	assert.Equal(t, int64(1002), actualAccountMap["Cash"].AccountId)
+	assert.Equal(t, int64(1001), actualAccountMap["Bank Account"].AccountId)
+}
+
+func TestGetVisibleAccountNameMapByList_AliasesOfHiddenAccountNotMapped(t *testing.T) {
+	accounts := []*models.Account{
+		{
+			AccountId: 1001,
+			Name:      "Hidden Bank",
+			Type:      models.ACCOUNT_TYPE_SINGLE_ACCOUNT,
+			Hidden:    true,
+			Aliases:   []string{"Old Bank"},
+		},
+	}
+	actualAccountMap := Accounts.GetVisibleAccountNameMapByList(accounts)
+
+	assert.Equal(t, 0, len(actualAccountMap))
+	assert.NotContains(t, actualAccountMap, "Hidden Bank")
+	assert.NotContains(t, actualAccountMap, "Old Bank")
+}
+
+func TestGetVisibleAccountNameMapByList_EmptyAliasSkipped(t *testing.T) {
+	accounts := []*models.Account{
+		{
+			AccountId: 1001,
+			Name:      "Bank Account",
+			Type:      models.ACCOUNT_TYPE_SINGLE_ACCOUNT,
+			Hidden:    false,
+			Aliases:   []string{"", "Old Bank"},
+		},
+	}
+	actualAccountMap := Accounts.GetVisibleAccountNameMapByList(accounts)
+
+	assert.Contains(t, actualAccountMap, "Bank Account")
+	assert.Contains(t, actualAccountMap, "Old Bank")
+	assert.NotContains(t, actualAccountMap, "")
+}
+
 func TestGetAccountNames_EmptyList(t *testing.T) {
 	accounts := make([]*models.Account, 0)
 	actualAccountMap := Accounts.GetAccountNames(accounts)
