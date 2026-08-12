@@ -142,7 +142,7 @@ func (c *DataTableTransactionDataImporter) ParseImportedData(ctx core.Context, u
 				subCategory, exists := c.getTransactionCategory(expenseCategoryMap, categoryName, subCategoryName)
 
 				if !exists {
-					subCategory = c.createNewTransactionCategoryModel(user.Uid, subCategoryName, transactionCategoryType)
+					subCategory = c.createNewTransactionCategoryModel(user.Uid, categoryName, subCategoryName, transactionCategoryType)
 					allNewSubExpenseCategories = append(allNewSubExpenseCategories, subCategory)
 
 					if _, exists = expenseCategoryMap[subCategoryName]; !exists {
@@ -157,7 +157,7 @@ func (c *DataTableTransactionDataImporter) ParseImportedData(ctx core.Context, u
 				subCategory, exists := c.getTransactionCategory(incomeCategoryMap, categoryName, subCategoryName)
 
 				if !exists {
-					subCategory = c.createNewTransactionCategoryModel(user.Uid, subCategoryName, transactionCategoryType)
+					subCategory = c.createNewTransactionCategoryModel(user.Uid, categoryName, subCategoryName, transactionCategoryType)
 					allNewSubIncomeCategories = append(allNewSubIncomeCategories, subCategory)
 
 					if _, exists = incomeCategoryMap[subCategoryName]; !exists {
@@ -172,7 +172,7 @@ func (c *DataTableTransactionDataImporter) ParseImportedData(ctx core.Context, u
 				subCategory, exists := c.getTransactionCategory(transferCategoryMap, categoryName, subCategoryName)
 
 				if !exists {
-					subCategory = c.createNewTransactionCategoryModel(user.Uid, subCategoryName, transactionCategoryType)
+					subCategory = c.createNewTransactionCategoryModel(user.Uid, categoryName, subCategoryName, transactionCategoryType)
 					allNewSubTransferCategories = append(allNewSubTransferCategories, subCategory)
 
 					if _, exists = transferCategoryMap[subCategoryName]; !exists {
@@ -537,11 +537,12 @@ func (c *DataTableTransactionDataImporter) createNewAccountModel(uid int64, acco
 	}
 }
 
-func (c *DataTableTransactionDataImporter) createNewTransactionCategoryModel(uid int64, categoryName string, transactionCategoryType models.TransactionCategoryType) *models.TransactionCategory {
+func (c *DataTableTransactionDataImporter) createNewTransactionCategoryModel(uid int64, parentCategoryName string, subCategoryName string, transactionCategoryType models.TransactionCategoryType) *models.TransactionCategory {
 	return &models.TransactionCategory{
-		Uid:  uid,
-		Name: categoryName,
-		Type: transactionCategoryType,
+		Uid:                        uid,
+		Name:                       subCategoryName,
+		Type:                       transactionCategoryType,
+		OriginalParentCategoryName: parentCategoryName,
 	}
 }
 

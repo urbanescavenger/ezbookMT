@@ -21,14 +21,16 @@ type TransactionCategory struct {
 	Type             TransactionCategoryType `xorm:"INDEX(IDX_category_uid_deleted_type_parent_category_id_order) NOT NULL"`
 	ParentCategoryId int64                   `xorm:"INDEX(IDX_category_uid_deleted_type_parent_category_id_order) NOT NULL"`
 	Name             string                  `xorm:"VARCHAR(64) NOT NULL"`
-	DisplayOrder     int32                   `xorm:"INDEX(IDX_category_uid_deleted_type_parent_category_id_order) NOT NULL"`
-	Icon             int64                   `xorm:"NOT NULL"`
-	Color            string                  `xorm:"VARCHAR(6) NOT NULL"`
-	Hidden           bool                    `xorm:"NOT NULL"`
-	Comment          string                  `xorm:"VARCHAR(255) NOT NULL"`
-	CreatedUnixTime  int64
-	UpdatedUnixTime  int64
-	DeletedUnixTime  int64
+	// OriginalParentCategoryName represents the original parent transaction category name parsed from the import file
+	OriginalParentCategoryName string                  `xorm:"-"`
+	DisplayOrder               int32                   `xorm:"INDEX(IDX_category_uid_deleted_type_parent_category_id_order) NOT NULL"`
+	Icon                       int64                   `xorm:"NOT NULL"`
+	Color                      string                  `xorm:"VARCHAR(6) NOT NULL"`
+	Hidden                     bool                    `xorm:"NOT NULL"`
+	Comment                    string                  `xorm:"VARCHAR(255) NOT NULL"`
+	CreatedUnixTime            int64
+	UpdatedUnixTime            int64
+	DeletedUnixTime            int64
 }
 
 // TransactionCategoryListRequest represents all parameters of transaction category listing request

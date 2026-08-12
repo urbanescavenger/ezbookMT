@@ -71,15 +71,57 @@ func CreateImportedData(c core.Context, accountService *AccountService, category
 }
 
 func createImportedCategories(c core.Context, categoryService *TransactionCategoryService, uid int64, newCategories []*models.TransactionCategory, categoryIdMap map[string]int64) {
+	if len(newCategories) < 1 {
+		return
+	}
+
+	categoryType := newCategories[0].Type
+
+	// Build the name map of the existing primary (level-one) categories of the target type,
+	// which the new sub categories will be attached to
+	primaryCategories, err := categoryService.GetAllCategoriesByUid(c, uid, categoryType, models.LevelOneTransactionCategoryParentId)
+
+	if err != nil {
+		log.Errorf(c, "[import_helper.createImportedCategories] failed to get primary categories for user \"uid:%d\", because %s", uid, err.Error())
+		return
+	}
+
+	visiblePrimaryCategories := make([]*models.TransactionCategory, 0, len(primaryCategories))
+	primaryCategoryIdMap := make(map[string]int64, len(primaryCategories))
+
+	for i := 0; i < len(primaryCategories); i++ {
+		primaryCategory := primaryCategories[i]
+
+		if primaryCategory.Hidden {
+			continue
+		}
+
+		visiblePrimaryCategories = append(visiblePrimaryCategories, primaryCategory)
+		primaryCategoryIdMap[primaryCategory.Name] = primaryCategory.CategoryId
+	}
+
+	if len(visiblePrimaryCategories) < 1 {
+		log.Errorf(c, "[import_helper.createImportedCategories] there are no visible primary categories for user \"uid:%d\"", uid)
+		return
+	}
+
 	for i := 0; i < len(newCategories); i++ {
 		category := newCategories[i]
-		category.ParentCategoryId = models.LevelOneTransactionCategoryParentId
+		parentCategoryId, exists := primaryCategoryIdMap[category.OriginalParentCategoryName]
+
+		if !exists {
+			// No parent primary category matches the imported parent category name,
+			// so attach the sub category to the first existing primary category
+			parentCategoryId = visiblePrimaryCategories[0].CategoryId
+		}
+
+		category.ParentCategoryId = parentCategoryId
 		category.DisplayOrder = 0
 		category.Icon = 0
 		category.Color = ""
 		category.Hidden = false
 
-		err := categoryService.CreateCategory(c, category)
+		err = categoryService.CreateCategory(c, category)
 
 		if err != nil {
 			log.Errorf(c, "[import_helper.createImportedCategories] failed to create category \"%s\" for user \"uid:%d\", because %s", category.Name, uid, err.Error())
