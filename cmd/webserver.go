@@ -23,6 +23,7 @@ import (
 	"github.com/mayswind/ezbookkeeping/pkg/mcp"
 	"github.com/mayswind/ezbookkeeping/pkg/middlewares"
 	"github.com/mayswind/ezbookkeeping/pkg/requestid"
+	"github.com/mayswind/ezbookkeeping/pkg/services"
 	"github.com/mayswind/ezbookkeeping/pkg/settings"
 	"github.com/mayswind/ezbookkeeping/pkg/utils"
 	"github.com/mayswind/ezbookkeeping/pkg/validators"
@@ -86,6 +87,19 @@ func startWebServer(c *core.CliContext) error {
 		log.BootErrorf(c, "[webserver.startWebServer] initializes cron job scheduler failed, because %s", err.Error())
 		return err
 	}
+
+	// Deduplicate all users transactions in the background after startup, so it does not block the server
+	go func() {
+		c := core.NewNullContext()
+		deletedCount, err := services.Transactions.DeduplicateAllUsersTransactions(c)
+
+		if err != nil {
+			log.BootErrorf(c, "[webserver.startWebServer] failed to deduplicate all users transactions, because %s", err.Error())
+			return
+		}
+
+		log.BootInfof(c, "[webserver.startWebServer] deduplicated all users transactions, %d duplicate transactions have been removed", deletedCount)
+	}()
 
 	serverInfo := fmt.Sprintf("current server id is %d, current instance id is %d", requestid.Container.GetCurrentServerUniqId(), requestid.Container.GetCurrentInstanceUniqId())
 	uuidServerInfo := ""

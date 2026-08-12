@@ -86,7 +86,7 @@ func (s *TransactionService) DeduplicateTransactions(c core.Context, uid int64) 
 	}
 
 	type dedupKey struct {
-		time      int64
+		time      int64 // transaction time in seconds, because transaction_time is unique in milliseconds for the same user
 		amount    int64
 		comment   string
 		accountId int64
@@ -97,7 +97,7 @@ func (s *TransactionService) DeduplicateTransactions(c core.Context, uid int64) 
 	for i := 0; i < len(allTransactions); i++ {
 		transaction := allTransactions[i]
 		key := dedupKey{
-			time:      transaction.TransactionTime,
+			time:      transaction.TransactionTime / 1000,
 			amount:    transaction.Amount,
 			comment:   transaction.Comment,
 			accountId: transaction.AccountId,
@@ -132,6 +132,31 @@ func (s *TransactionService) DeduplicateTransactions(c core.Context, uid int64) 
 	}
 
 	return deletedCount, nil
+}
+
+// DeduplicateAllUsersTransactions removes duplicate transactions of all users
+// and returns the total number of deleted transactions
+func (s *TransactionService) DeduplicateAllUsersTransactions(c core.Context) (int, error) {
+	users, err := Users.GetAllUsers(c)
+
+	if err != nil {
+		return 0, err
+	}
+
+	totalDeletedCount := 0
+
+	for i := 0; i < len(users); i++ {
+		deletedCount, err := s.DeduplicateTransactions(c, users[i].Uid)
+
+		if err != nil {
+			log.Errorf(c, "[transactions.DeduplicateAllUsersTransactions] failed to deduplicate transactions for user \"uid:%d\", because %s", users[i].Uid, err.Error())
+			continue
+		}
+
+		totalDeletedCount += deletedCount
+	}
+
+	return totalDeletedCount, nil
 }
 
 // GetAllSpecifiedTransactions returns all transactions that match given conditions

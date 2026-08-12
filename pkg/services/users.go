@@ -103,6 +103,14 @@ func (s *UserService) GetUserById(c core.Context, uid int64) (*models.User, erro
 	return user, nil
 }
 
+// GetAllUsers returns all non-deleted users
+func (s *UserService) GetAllUsers(c core.Context) ([]*models.User, error) {
+	var users []*models.User
+	err := s.UserDB().NewSession(c).Where("deleted=?", false).Find(&users)
+
+	return users, err
+}
+
 // GetUserByUsername returns the user model according to user name
 func (s *UserService) GetUserByUsername(c core.Context, username string) (*models.User, error) {
 	if username == "" {
