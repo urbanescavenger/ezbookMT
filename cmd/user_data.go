@@ -365,6 +365,19 @@ var UserData = &cli.Command{
 			},
 		},
 		{
+			Name:   "transaction-deduplicate",
+			Usage:  "Remove duplicate transactions (same account, time, amount and comment) of specified user",
+			Action: bindAction(deduplicateUserTransactions),
+			Flags: []cli.Flag{
+				&cli.StringFlag{
+					Name:     "username",
+					Aliases:  []string{"n"},
+					Required: true,
+					Usage:    "Specific user name",
+				},
+			},
+		},
+		{
 			Name:   "transaction-export",
 			Usage:  "Export user all transactions to file",
 			Action: bindAction(exportUserTransaction),
@@ -816,6 +829,29 @@ func checkUserTransactionAndAccount(c *core.CliContext) error {
 	}
 
 	log.CliInfof(c, "[user_data.checkUserTransactionAndAccount] user transactions and accounts data has been checked successfully, there is no problem with user data")
+
+	return nil
+}
+
+func deduplicateUserTransactions(c *core.CliContext) error {
+	_, err := initializeSystem(c)
+
+	if err != nil {
+		return err
+	}
+
+	username := c.String("username")
+
+	log.CliInfof(c, "[user_data.deduplicateUserTransactions] starting deduplicating transactions of user \"%s\"", username)
+
+	deletedCount, err := clis.UserData.DeduplicateTransactions(c, username)
+
+	if err != nil {
+		log.CliErrorf(c, "[user_data.deduplicateUserTransactions] error occurs when deduplicating user transactions")
+		return err
+	}
+
+	log.CliInfof(c, "[user_data.deduplicateUserTransactions] user \"%s\" transactions have been deduplicated successfully, %d duplicate transactions have been removed", username, deletedCount)
 
 	return nil
 }

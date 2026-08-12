@@ -876,7 +876,41 @@ func (l *UserDataCli) ImportTransaction(c *core.CliContext, username string, fil
 		return err
 	}
 
+	// Deduplicate all transactions of the user after import
+	deduplicatedCount, dedupErr := l.transactions.DeduplicateTransactions(c, user.Uid)
+
+	if dedupErr != nil {
+		log.CliWarnf(c, "[user_data.ImportTransaction] failed to deduplicate transactions for user \"%s\", because %s", username, dedupErr.Error())
+	} else if deduplicatedCount > 0 {
+		log.CliInfof(c, "[user_data.ImportTransaction] user \"%s\" has removed %d duplicate transactions", username, deduplicatedCount)
+	}
+
 	return nil
+}
+
+// DeduplicateTransactions removes duplicate transactions (same account, transaction time, amount and comment)
+// of the specified user and returns the number of deleted transactions
+func (l *UserDataCli) DeduplicateTransactions(c *core.CliContext, username string) (int, error) {
+	if username == "" {
+		log.CliErrorf(c, "[user_data.DeduplicateTransactions] user name is empty")
+		return 0, errs.ErrUsernameIsEmpty
+	}
+
+	uid, err := l.getUserIdByUsername(c, username)
+
+	if err != nil {
+		log.CliErrorf(c, "[user_data.DeduplicateTransactions] error occurs when getting user id by user name")
+		return 0, err
+	}
+
+	deletedCount, err := l.transactions.DeduplicateTransactions(c, uid)
+
+	if err != nil {
+		log.CliErrorf(c, "[user_data.DeduplicateTransactions] failed to deduplicate transactions for user \"%s\", because %s", username, err.Error())
+		return 0, err
+	}
+
+	return deletedCount, nil
 }
 
 func (l *UserDataCli) getUserIdByUsername(c *core.CliContext, username string) (int64, error) {

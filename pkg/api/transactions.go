@@ -2683,6 +2683,15 @@ func (a *TransactionsApi) TransactionImportHandler(c *core.WebContext) (any, *er
 
 	log.Infof(c, "[transactions.TransactionImportHandler] user \"uid:%d\" has imported %d transactions successfully", uid, count)
 
+	// Deduplicate all transactions of the user after import
+	deduplicatedCount, dedupErr := a.transactions.DeduplicateTransactions(c, user.Uid)
+
+	if dedupErr != nil {
+		log.Warnf(c, "[transactions.TransactionImportHandler] failed to deduplicate transactions for user \"uid:%d\", because %s", user.Uid, dedupErr.Error())
+	} else if deduplicatedCount > 0 {
+		log.Infof(c, "[transactions.TransactionImportHandler] user \"uid:%d\" has removed %d duplicate transactions", user.Uid, deduplicatedCount)
+	}
+
 	a.SetSubmissionRemarkIfEnable(duplicatechecker.DUPLICATE_CHECKER_TYPE_IMPORT_TRANSACTIONS, uid, transactionImportReq.ClientSessionId, fmt.Sprintf("finished:%d", count))
 
 	return count, nil

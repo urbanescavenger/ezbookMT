@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math"
 	"math/big"
+	"sort"
 	"strings"
 	"time"
 
@@ -73,6 +74,64 @@ func (s *TransactionService) GetAllTransactions(c core.Context, uid int64, pageC
 	}
 
 	return allTransactions, nil
+}
+
+// DeduplicateTransactions removes duplicate transactions (same account, transaction time, amount and comment)
+// and keeps only one of each group, returns the number of deleted transactions
+func (s *TransactionService) DeduplicateTransactions(c core.Context, uid int64) (int, error) {
+	allTransactions, err := s.GetAllTransactions(c, uid, pageCountForLoadTransactionAmounts, false)
+
+	if err != nil {
+		return 0, err
+	}
+
+	type dedupKey struct {
+		time      int64
+		amount    int64
+		comment   string
+		accountId int64
+	}
+
+	groups := make(map[dedupKey][]*models.Transaction)
+
+	for i := 0; i < len(allTransactions); i++ {
+		transaction := allTransactions[i]
+		key := dedupKey{
+			time:      transaction.TransactionTime,
+			amount:    transaction.Amount,
+			comment:   transaction.Comment,
+			accountId: transaction.AccountId,
+		}
+		groups[key] = append(groups[key], transaction)
+	}
+
+	deletedCount := 0
+
+	for _, group := range groups {
+		if len(group) < 2 {
+			continue
+		}
+
+		// Keep the one with the smallest transaction id, delete the rest
+		sort.Slice(group, func(i, j int) bool {
+			return group[i].TransactionId < group[j].TransactionId
+		})
+
+		for i := 1; i < len(group); i++ {
+			err := s.DeleteTransaction(c, uid, group[i].TransactionId)
+
+			if err != nil {
+				// The paired record of a transfer transaction may have been deleted together,
+				// or the deletion may fail due to account validation; log and continue
+				log.Errorf(c, "[transactions.DeduplicateTransactions] failed to delete duplicate transaction \"id:%d\" for user \"uid:%d\", because %s", group[i].TransactionId, uid, err.Error())
+				continue
+			}
+
+			deletedCount++
+		}
+	}
+
+	return deletedCount, nil
 }
 
 // GetAllSpecifiedTransactions returns all transactions that match given conditions
