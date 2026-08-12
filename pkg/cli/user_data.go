@@ -1,7 +1,6 @@
 package cli
 
 import (
-	"strings"
 	"time"
 
 	"github.com/mayswind/ezbookkeeping/pkg/converters"
@@ -831,35 +830,9 @@ func (l *UserDataCli) ImportTransaction(c *core.CliContext, username string, fil
 		return errs.ErrOperationFailed
 	}
 
-	if len(newAccounts) > 0 {
-		accountNames := l.accounts.GetAccountNames(newAccounts)
-		log.CliErrorf(c, "[user_data.ImportTransaction] there are %d accounts (%s) need to be created, please create them manually", len(newAccounts), strings.Join(accountNames, ","))
-		return errs.ErrOperationFailed
-	}
-
-	if len(newSubExpenseCategories) > 0 {
-		categoryNames := l.categories.GetCategoryNames(newSubExpenseCategories)
-		log.CliErrorf(c, "[user_data.ImportTransaction] there are %d expense categories (%s) need to be created, please create them manually", len(newSubExpenseCategories), strings.Join(categoryNames, ","))
-		return errs.ErrOperationFailed
-	}
-
-	if len(newSubIncomeCategories) > 0 {
-		categoryNames := l.categories.GetCategoryNames(newSubIncomeCategories)
-		log.CliErrorf(c, "[user_data.ImportTransaction] there are %d income categories (%s) need to be created, please create them manually", len(newSubIncomeCategories), strings.Join(categoryNames, ","))
-		return errs.ErrOperationFailed
-	}
-
-	if len(newSubTransferCategories) > 0 {
-		categoryNames := l.categories.GetCategoryNames(newSubTransferCategories)
-		log.CliErrorf(c, "[user_data.ImportTransaction] there are %d transfer categories (%s) need to be created, please create them manually", len(newSubTransferCategories), strings.Join(categoryNames, ","))
-		return errs.ErrOperationFailed
-	}
-
-	if len(newTags) > 0 {
-		tagNames := l.tags.GetTagNames(newTags)
-		log.CliErrorf(c, "[user_data.ImportTransaction] there are %d transaction tags (%s) need to be created, please create them manually", len(newTags), strings.Join(tagNames, ","))
-		return errs.ErrOperationFailed
-	}
+	// Create the new accounts, categories and tags parsed from the import file, and fill the real ids back
+	idMaps := services.CreateImportedData(c, l.accounts, l.categories, l.tags, user.Uid, newAccounts, newSubExpenseCategories, newSubIncomeCategories, newSubTransferCategories, newTags, time.Local)
+	services.ApplyImportedDataIdMaps(parsedTransactions, idMaps)
 
 	newTransactions := parsedTransactions.ToTransactionsList()
 	newTransactionTagIdsMap, err := parsedTransactions.ToTransactionTagIdsMap()

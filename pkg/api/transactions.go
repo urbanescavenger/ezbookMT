@@ -2527,12 +2527,16 @@ func (a *TransactionsApi) TransactionParseImportFileHandler(c *core.WebContext) 
 
 	tagMap := a.transactionTags.GetVisibleTagNameMapByList(tags)
 
-	parsedTransactions, _, _, _, _, _, err := dataImporter.ParseImportedData(c, user, fileData, clientTimezone, additionalOptions, accountMap, expenseCategoryMap, incomeCategoryMap, transferCategoryMap, tagMap)
+	parsedTransactions, newAccounts, newSubExpenseCategories, newSubIncomeCategories, newSubTransferCategories, newTags, err := dataImporter.ParseImportedData(c, user, fileData, clientTimezone, additionalOptions, accountMap, expenseCategoryMap, incomeCategoryMap, transferCategoryMap, tagMap)
 
 	if err != nil {
 		log.Errorf(c, "[transactions.TransactionParseImportFileHandler] failed to parse imported data for user \"uid:%d\", because %s", user.Uid, err.Error())
 		return nil, errs.Or(err, errs.ErrOperationFailed)
 	}
+
+	// Create the new accounts, categories and tags parsed from the import file, and fill the real ids back
+	idMaps := services.CreateImportedData(c, a.accounts, a.transactionCategories, a.transactionTags, user.Uid, newAccounts, newSubExpenseCategories, newSubIncomeCategories, newSubTransferCategories, newTags, clientTimezone)
+	services.ApplyImportedDataIdMaps(parsedTransactions, idMaps)
 
 	parsedTransactionRespsList := parsedTransactions.ToImportTransactionResponseList()
 

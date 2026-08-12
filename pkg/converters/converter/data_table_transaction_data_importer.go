@@ -506,11 +506,34 @@ func (c *DataTableTransactionDataImporter) addTag(user *models.User, tagName str
 	return allNewTags, tagIds, tagNames
 }
 
+var accountCategoryKeywordMap = []struct {
+	keywords []string
+	category models.AccountCategory
+}{
+	{[]string{"信用卡"}, models.ACCOUNT_CATEGORY_CREDIT_CARD},
+	{[]string{"储蓄卡"}, models.ACCOUNT_CATEGORY_SAVINGS_ACCOUNT},
+}
+
+func getAccountCategoryByAccountName(accountName string) models.AccountCategory {
+	for i := 0; i < len(accountCategoryKeywordMap); i++ {
+		item := accountCategoryKeywordMap[i]
+
+		for j := 0; j < len(item.keywords); j++ {
+			if strings.Contains(accountName, item.keywords[j]) {
+				return item.category
+			}
+		}
+	}
+
+	return models.ACCOUNT_CATEGORY_CHECKING_ACCOUNT
+}
+
 func (c *DataTableTransactionDataImporter) createNewAccountModel(uid int64, accountName string, currency string) *models.Account {
 	return &models.Account{
 		Uid:      uid,
 		Name:     accountName,
 		Currency: currency,
+		Category: getAccountCategoryByAccountName(accountName),
 	}
 }
 
